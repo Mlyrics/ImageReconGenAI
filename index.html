@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutritionAI - Upload your food image to analyze</title>
+  <style>
+    body {
+      background-color: #282c34; /* Dark background color */
+      color: #ffffff; /* White text */
+      text-align: center;
+      padding: 20px;
+      font-family: Arial, sans-serif; /* Change to a modern sans-serif font */
+    }
+    button {
+      background-color: #61dafb; /* Light blue button color */
+      color: #282c34; /* Dark text for the button */
+      padding: 12px 24px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px; /* Add some margin to separate from other elements */
+    }
+    button:hover {
+      background-color: #45aaf2; /* Darker blue on hover */
+    }
+    .logo-container img {
+      width: 100px; /* Adjust the size as needed */
+      height: auto;
+    }
+    .status-message {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    #container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    #thumbnail {
+      width: 100px; /* Adjust the size of the thumbnail */
+      height: 100px; /* Adjust the size of the thumbnail */
+      margin-right: 20px; /* Add margin to separate from the text */
+    }
+    #result {
+      font-size: 8px; /* Adjust font size */
+      text-align: left; /* Align text to the left */
+      font-weight: bold;
+      max-width: 150px; /* Limit the width of the box */
+      word-wrap: break-word; /* Wrap long words */
+      border: 1px solid #ffffff; /* White border */
+      padding: 10px; /* Add padding */
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-container">
+    <img src="https://static.us-east-1.prod.workshops.aws/public/3f40f3ba-f654-4e95-b13d-f4dfddd5ea02/static/images/rek-icon.jpg" alt="AWS Logo">
+    <img src="https://d2908q01vomqb2.cloudfront.net/da4b9237bacccdf19c0760cab7aec4a8359010b0/2018/04/03/IconOnly.png" alt="Amazon Bedrock Logo">
+  </div>
+  <h1>NutritionAI</h1>
+  <h2>Upload your food image to analyze</h2>
+  <input type="file" id="fileInput">
+  <button onclick="uploadImage()">Upload Image</button>
+  <button onclick="generate()">Generate</button>
+
+  <div id="container">
+    <div id="thumbnail"></div>
+    <div id="result"></div>
+  </div>
+
+  <div id="statusMessage" class="status-message"></div>
+
+  <script>
+ async function generate() {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerText = 'Generating...';  // Show a loading message immediately
+
+      // Delay the actual API call by 5 seconds (8000 milliseconds)
+      setTimeout(async () => {
+        try {
+          
+          const apiUrl = 'APY ANY ENDPOINT';
+          const response = await fetch(apiUrl);
+          const data = await response.text();
+
+          // Display the text after the delay
+          resultDiv.innerText = 'Generated Result: ' + data;
+        } catch (error) {
+          console.error('Error:', error);
+          resultDiv.innerText = 'An error occurred.';
+        }
+      }, 10000); // 20 seconds delay (20000 milliseconds)
+    }
+    async function uploadImage() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+
+      if (!file || !file.type.includes('image/jpeg')) {
+        document.getElementById('statusMessage').innerText = 'Image must be in JPEG format (jpg).';
+        return;
+      }
+
+      document.getElementById('statusMessage').innerText = '';
+
+      const formData = new FormData();
+      formData.append('image', file);
+
+      // Generate thumbnail
+      const thumbnailDiv = document.getElementById('thumbnail');
+      thumbnailDiv.innerHTML = '';  // Clear previous thumbnail
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const thumbnailImage = document.createElement('img');
+        thumbnailImage.src = reader.result;
+        thumbnailImage.width = 100; // Adjust thumbnail width
+        thumbnailImage.height = 100; // Adjust thumbnail height
+        thumbnailDiv.appendChild(thumbnailImage);
+      };
+
+      reader.readAsDataURL(file);
+
+      // Make a PUT request to API Gateway to send image to S3 bucket
+      const response = await fetch('API PUT ENDPOINT ', {
+        method: 'PUT',
+        body: file,
+        headers: {
+          'Content-Type': 'image/jpeg' // Set the Content-Type header
+        }
+      });
+
+      const data = await response.json();
+      console.log('Response from Lambda:', data);
+    }
+  </script>
+</body>
+</html>
