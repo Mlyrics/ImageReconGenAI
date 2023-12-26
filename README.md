@@ -11,9 +11,7 @@ In the repo file you will find the following files that puts together a front an
 Files: 
   1. rekognition-bedrock.py <-Lambda function logic to extract labels, and generate bedrock response
   2. fetch-output-index.js <-Node.js script to pull the bedrock response from output.txt into the front end
-  3. apidownloader-prod-swagger-apigateway.json <-API Gateway swagger configuration
-  4. api-uploader-prod-swagger-apigateway.json <-API Gateway swagger configuration
-  5. index.html <-front end HTML/Javascript web page
+  3. index.html <-front end HTML/Javascript web page
 
 Solution Architecture:
 ![image](https://github.com/Mlyrics/nutrition-ai/assets/150750290/fd4e9b84-f123-4108-aa3a-362adc3ac925)
@@ -21,12 +19,12 @@ Solution Architecture:
 Deployment Steps: 
 # Create S3 buckets
 1. Create a S3 bucket to store the Amazon Bedrock output text- file. 
-2. Create a S3 bucket to store the Image that need to be analyzed
+2. Create a S3 bucket to store the Image that will be analyzed
 
 # Enable Amazon Bedrock Models
 1. Go to the Amazon Bedrock service console
 2. Click on Get Started
-3. from the left menu click on Model Access, click on Manage model access, choose all models and click on Save
+3. From the left menu click on Model Access, click on Manage model access, choose all models and click Save
 
 # Setup Rekognition-Bedrock Lambda functions
 1. Create a new Lambda function in Paython 3.12 and provide a any name
@@ -35,7 +33,7 @@ Deployment Steps:
 4. Update line #40 with the bucket name where you want to store the food related image to be analyzed
 5. Save & Deploy
 6. Add the appropriate permissions for Bedrock Access and S3 bucket
-7. Change the application timeout to 45 sec
+7. Change the Lambda application timeout to 45 sec under the Configuration tab
 8. Configure a a S3 Trigger for the Lambda function:
    a. From the Lambda function main console, click on "Add Trigger"
    b. Source: S3
@@ -59,4 +57,4 @@ Deployment Steps:
 2. Update line #126 with the PUT API endpoint URL
 3. Update line #84 with the ANY API enpoint URL
 4. Save and Close
-5. At this stage you could either host the application in S3 or preferred hsoting provider as well as run locally in your Browser. 
+5. At this stage you could either host the application in S3 or preferred hsoting provider or run locally from your Browser. 
